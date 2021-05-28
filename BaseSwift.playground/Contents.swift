@@ -311,9 +311,23 @@ case (_, _):
     print("兜底")
 }
 
+// guard
+func greet(person: [String: String]) {
+    guard let name = person["name"] else { //一个 guard 语句总是有一个 else 从句，如果条件不为真则执行 else 从句中的代码。
+        return
+    }
+    print("hello \(name)!")
+}
+
+// 检测API可用
+if #available(iOS 10, macOS 10.12, *) {
+    
+} else {
+    
+}
 
 
-
+/*/* --函数-- */*/
 
 
 
