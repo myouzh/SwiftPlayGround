@@ -328,6 +328,56 @@ if #available(iOS 10, macOS 10.12, *) {
 
 
 /*/* --函数-- */*/
+// 忽略参数标签
+///如果你不希望为某个参数添加一个标签，可以使用一个下划线（_）来代替一个明确的参数标签。
+func someFunction(_ firstParamName:Int, secondParamName:Int) {
+    
+}
+someFunction(1, secondParamName: 2) //就没有参数名
 
+// 默认参数值
+func someDefalutFunction(paramName:Int, paramWithDefalut:Int = 12) {
+    // 如果第二个参数不传，则默认是12
+}
+someDefalutFunction(paramName: 1) //默认第二个参数12
+someDefalutFunction(paramName: 1, paramWithDefalut: 2)
 
+// 可变参数
+func averageNums(_ numbers:Double...) -> Double {
+    var total:Double = 0
+    for number in numbers {
+        total += number
+    }
+    return total/Double(numbers.count)
+}
+let ave1 = averageNums(1, 2, 3, 4, 5)
+let ave2 = averageNums(3, 8.25, 18.75)
 
+// 输入输出参数
+func swapTwoInts(_ a: inout Int, _ b: inout Int) {
+    a = a + b
+    b = a - b
+    a = a - b
+}
+var someInt = 3
+var anotherInt = 108
+swap(&someInt, &anotherInt)
+print("someInt is now \(someInt), and anotherInt is now \(anotherInt)")
+
+// 函数类型
+func addTwoInts(_ a:Int, _ b:Int) -> Int {
+    return a + b
+}
+
+func multiply(_ a: Int, _ b: Int) -> Int {
+    return a * b
+}
+
+var mathFunction: (Int, Int) -> Int = addTwoInts
+
+func printMathResult(_ mathFunction:(Int, Int) -> Int, _ a:Int, _ b:Int) {
+    print("Result: \(mathFunction(a, b))")
+}
+
+printMathResult(addTwoInts, 3, 5) //8
+printMathResult(multiply, 3, 5) //15
