@@ -375,9 +375,77 @@ func multiply(_ a: Int, _ b: Int) -> Int {
 
 var mathFunction: (Int, Int) -> Int = addTwoInts
 
+// 函数类型作为参数
 func printMathResult(_ mathFunction:(Int, Int) -> Int, _ a:Int, _ b:Int) {
     print("Result: \(mathFunction(a, b))")
 }
 
 printMathResult(addTwoInts, 3, 5) //8
 printMathResult(multiply, 3, 5) //15
+
+// 函数类型作为返回类型
+func stepForward(_ input: Int) -> Int {
+    return input + 1
+}
+func stepBackward(_ input: Int) -> Int {
+    return input - 1
+}
+func chooseStepFunction(backward: Bool) -> (Int) -> Int {
+    return backward ? stepBackward : stepForward
+}
+var currentValue = 3
+let moveNearToZero = chooseStepFunction(backward: currentValue > 0)
+print("Counting to zero:")
+while currentValue != 0 {
+    print("\(currentValue)...")
+    currentValue = moveNearToZero(currentValue)
+}
+
+// 嵌套函数
+func chooseStepFunction1(backward: Bool) -> (Int) -> Int {
+    func stepForward1(input: Int) -> Int { return input + 1}
+    func stepBackward1(input: Int) -> Int { return input - 1}
+    return backward ? stepBackward1 : stepForward1
+}
+
+
+/*/* --闭包-- */*/
+let someNames = ["Chris", "Alex", "Ewa", "Barry", "Daniella"]
+func backWard(_ s1: String, _ s2: String) -> Bool {
+    return s1 > s2
+}
+/* 解释
+ 如果第一个字符串（s1）大于第二个字符串（s2），backward(_:_:) 函数会返回 true，表示在新的数组中 s1 应该出现在 s2 前。对于字符串中的字符来说，“大于”表示“按照字母顺序较晚出现”。
+ */
+var reverseNames = someNames.sorted(by: backWard)
+// reversedNames 为 ["Ewa", "Daniella", "Chris", "Barry", "Alex"]
+var reverseNames1 = someNames.sorted(by: {(s1: String, s2: String) -> Bool in
+    return s1 > s2
+})
+var reverseNames1_1 = someNames.sorted(by: {(s1: String, s2: String) -> Bool in return s1 > s2 }) // 变成一行代码
+
+/*
+ 根据上下文推断类型
+ sorted(by:) 方法被一个字符串数组调用，因此其参数必须是 (String, String) -> Bool 类型的函数。这意味着 (String, String) 和 Bool 类型并不需要作为闭包表达式定义的一部分。因为所有的类型都可以被正确推断，返回箭头（->）和围绕在参数周围的括号也可以被省略：
+ */
+var reverseNames2 = someNames.sorted(by:{s1, s2 in return s1 > s2})
+
+/* 单表达式闭包的隐式返回
+   单行表达式闭包可以通过省略 return 关键字来隐式返回单行表达式的结果，如上版本的例子可以改写为：
+ */
+var reverseNames3 = someNames.sorted(by: {s1, s2 in s1 > s2})
+
+/* 参数名称缩写
+ Swift 自动为内联闭包提供了参数名称缩写功能，你可以直接通过 $0，$1，$2 来顺序调用闭包的参数，以此类推。
+ */
+// 在这个例子中，$0 和 $1 表示闭包中第一个和第二个 String 类型的参数。
+var reverseNames4 = someNames.sorted(by: {$0 > $1})
+
+/*
+ 运算符方法
+ Swift 的 String 类型定义了关于大于号（>）的字符串实现，其作为一个函数接受两个 String 类型的参数并返回 Bool 类型的值。而这正好与 sorted(by:) 方法的参数需要的函数类型相符合。
+ */
+var reverseNames5 = someNames.sorted(by: > )
+
+// 尾随闭包
+
