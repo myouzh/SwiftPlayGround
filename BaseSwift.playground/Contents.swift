@@ -447,5 +447,68 @@ var reverseNames4 = someNames.sorted(by: {$0 > $1})
  */
 var reverseNames5 = someNames.sorted(by: > )
 
-// 尾随闭包
 
+// 尾随闭包
+/**
+ 如果你需要将一个很长的闭包表达式作为最后一个参数传递给函数，将这个闭包替换成为尾随闭包的形式很有用。尾随闭包是一个书写在函数圆括号之后的闭包表达式，函数支持将其作为最后一个参数调用。在使用尾随闭包时，你不用写出它的参数标签：
+ func someFunctionThatTakesAClosure(closure: () -> Void) {
+     // 函数体部分
+ }
+
+ // 以下是不使用尾随闭包进行函数调用
+ someFunctionThatTakesAClosure(closure: {
+     // 闭包主体部分
+ })
+
+ // 以下是使用尾随闭包进行函数调用
+ someFunctionThatTakesAClosure() {
+     // 闭包主体部分
+ }
+ */
+
+/**
+ 在 闭包表达式语法 上章节中的字符串排序闭包可以作为尾随包的形式改写在 sorted(by:) 方法圆括号的外面：
+ */
+var reverseNames6 = someNames.sorted() { $0 > $1 }
+/**
+ 如果闭包表达式是函数或方法的唯一参数，则当你使用尾随闭包时，你甚至可以把 () 省略掉：
+ */
+var reverseNames7 = someNames.sorted { $0 > $1 }
+
+let digitNames = [
+    0: "Zero", 1: "One", 2: "Two",   3: "Three", 4: "Four",
+    5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine"
+]
+let numbers = [16, 58, 510]
+
+let strings = numbers.map {
+    (number:Int) -> String in
+    var number = number
+    var string = ""
+    repeat {
+        string = digitNames[number%10]! + string
+        number /= 10
+    } while number > 0
+    return string
+}
+
+// 值捕获
+/**
+ 闭包可以在其被定义的上下文中捕获常量或变量。即使定义这些常量和变量的原作用域已经不存在，闭包仍然可以在闭包函数体内引用和修改这些值。
+ */
+func makeIncrementer(forIncrement amount:Int) -> ()->Int {
+    var runingTotal = 0
+    func incrementer() -> Int {
+        runingTotal += amount
+        return runingTotal
+    }
+    return incrementer
+}
+let incrementByTen = makeIncrementer(forIncrement: 10)
+// incrementByTen是个函数类型  incrementByTen() 是调用这个函数!返回值是Int
+incrementByTen() // 返回的值为10
+incrementByTen() // 返回的值为20
+incrementByTen() // 返回的值为30
+makeIncrementer(forIncrement: 10)() // 返回的值为10
+makeIncrementer(forIncrement: 10)() // 返回的值为10
+makeIncrementer(forIncrement: 10)() // 返回的值为10
